@@ -5,4 +5,4 @@ The intention is to have this node run on a server computer while receiving sens
 # Learning Methods
 This ROS2 node uses on-line learning methods based on [HTM theory](https://www.youtube.com/playlist?list=PL3yXMgtrZmDqhsFQzwUC9V8MeeVOQ7eZ9), and cortical processing.
 # Action Generation
-Action generation is based on a neural network model of the basal ganglia. It produces internal ideas that are decided upon by programmable factors.
+Action generation is based on a neural network model of the [basal ganglia](https://www.youtube.com/watch?v=hxvep2Y8ShI) It produces internal ideas that are influenced, and decided upon by programmable factors.

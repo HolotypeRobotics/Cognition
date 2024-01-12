@@ -9,7 +9,7 @@ class Agent:
         self.initialized = False
         self.config = None
         self.blocks = []
-        self.scheduler = None  # Initialize scheduler here
+        self.scheduler = Scheduler(self.blocks)  # Initialize scheduler here
         
     def configure(self, config_path):
         """
@@ -25,6 +25,17 @@ class Agent:
         except Exception as e:
             print(f"Failed to configure agent: {e}")
             return False
+        
+    def add_block(self, block):
+        """
+        Adds a block to the agent.
+
+        Args:
+            block (object): The block to add.
+        """
+        if not isinstance(block, Block):
+            raise TypeError("Argument must be of type 'Block'")
+        self.blocks.append(block)
 
     def process_data(self, data):
         """

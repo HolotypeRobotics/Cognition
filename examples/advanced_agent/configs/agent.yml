@@ -1,0 +1,29 @@
+name: MyHIMAAgent
+hierarchy:
+  block_directory: configs/blocks
+  blocks:
+    - name: SensoryInputBlock
+      file: SensoryInputBlock.yml
+    - name: HighLevelProcessingBlock
+      file: HighLevelProcessingBlock.yml
+    - name: IntrinsicMotivationModule
+      file: IntrinsicMotivationBlock.yml
+    - name: ActionSelectionBlock
+      file: ActionSelectionBlock.yml
+  connections:
+    - source: SensoryInputBlock
+      target: HighLevelProcessingBlock
+      input_channel: sensory_data
+      output_channel: processed_input
+    - source: HighLevelProcessingBlock
+      target: IntrinsicMotivationModule
+      input_channel: processed_input
+      output_channel: motivation_signals
+    - source: IntrinsicMotivationModule
+      target: ActionSelectionBlock
+      input_channel: motivation_signals
+      output_channel: selected_action
+  call_order:
+    call_order:
+      - [SensoryInputBlock, HighLevelProcessingBlock]
+      - [IntrinsicMotivationModule, ActionSelectionBlock]

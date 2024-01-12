@@ -1,0 +1,5 @@
+name: ActionSelectionBlock
+type: ActionSelectionBlock  # Assuming a custom block for action selection
+parameters:
+  num_actions: 5  # Assuming 5 possible actions
+  input_size: 1  # Assuming a single scalar motivation signal

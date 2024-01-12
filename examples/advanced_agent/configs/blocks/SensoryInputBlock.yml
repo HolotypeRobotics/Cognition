@@ -1,0 +1,70 @@
+name: SensoryInputBlock
+parameters:
+  num_cells: 512
+  input_size: 10  # Assuming 10 sensory inputs
+htm:
+  temporal:
+    n_frequent_seqs: 100
+    max_segment_length: 10
+    max_synapses_per_segment: 32
+    max_new_synapse_count: 32
+    activation_threshold: 10
+    min_threshold: 5
+    sample_size: 10
+    perm_decrement: 0.1
+    perm_increment: 0.1
+    perm_initial: 0.5
+    predicted_segment_decrement: 0.001
+    max_segments_per_cell: 128
+    max_synapses_per_segment: 32
+    max_new_synapse_count: 32
+    max_synapse_age: 0.1
+    min_threshold: 5
+    sample_size: 10
+    activation_threshold: 10
+    predicted_segment_decrement: 0.001
+    perm_decrement: 0.1
+    perm_increment: 0.1
+    perm_initial: 0.5
+  spatial:
+    n_frequent_seqs: 100
+    max_segment_length: 10
+    max_synapses_per_segment: 32
+    max_new_synapse_count: 32
+    activation_threshold: 10
+    min_threshold: 5
+    sample_size: 10
+    perm_decrement: 0.1
+    perm_increment: 0.1
+    perm_initial: 0.5
+    predicted_segment_decrement: 0.001
+    max_segments_per_cell: 128
+    max_synapses_per_segment: 32
+    max_new_synapse_count: 32
+    max_synapse_age: 0.1
+    min_threshold: 5
+    sample_size: 10
+    activation_threshold: 10
+    predicted_segment_decrement: 0.001
+    perm_decrement: 0.1
+    perm_increment: 0.1
+    perm_initial: 0.5
+  cells:
+    activation_threshold: 10
+    min_threshold: 5
+    sample_size: 10
+    perm_decrement: 0.1
+    perm_increment: 0.1
+    perm_initial: 0.5
+  synapses:
+    max_segments_per_cell: 128
+    max_synapses_per_segment: 32
+    max_new_synapse_count: 32
+    max_synapse_age: 0.1
+    min_threshold: 5
+    sample_size: 10
+    activation_threshold: 10
+    predicted_segment_decrement: 0.001
+    perm_decrement: 0.1
+    perm_increment: 0.1
+    perm_initial: 0.5

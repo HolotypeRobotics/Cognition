@@ -1,6 +1,0 @@
-name: IntrinsicMotivationModule
-type: IntrinsicMotivationBlock
-parameters:
-  novelty_threshold: 0.2
-  complexity_weight: 0.5
-  input_size: 1024  # Matching output size of HighLevelProcessingBlock

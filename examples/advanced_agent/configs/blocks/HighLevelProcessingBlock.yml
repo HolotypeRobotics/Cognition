@@ -1,5 +1,0 @@
-name: HighLevelProcessingBlock
-type: HTMBlock
-parameters:
-  num_cells: 1024
-  input_size: 512  # Matching output size of SensoryInputBlock

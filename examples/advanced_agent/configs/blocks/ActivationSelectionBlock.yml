@@ -1,4 +1,5 @@
-network:
+block:
+  - name: "AcvtivationSelectionBlock"
   - Region:
       name: "encoder1"
       type: "ScalarEncoderRegion"

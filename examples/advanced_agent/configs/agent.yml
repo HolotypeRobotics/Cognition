@@ -1,34 +1,29 @@
 name: MyAgent
 hierarchy:
-  blocks:
+  - add_block:
     - name: SensoryInputBlock
-      htm:  !include blocks/SensoryInputBlock.yml
+      network:  !include blocks/SensoryInputBlock.yml
       phase: 1
       substitutions:
         - region: spatialpooler
           with: HighLevelProcessingBlock.spatialpooler.bottomUpIn
-
+  - add_block:
     - name: HighLevelProcessingBlock
-      htm:  !include blocks/HighLevelProcessingBlock.yml
+      network:  !include blocks/HighLevelProcessingBlock.yml
       phase: 1
 
+  - add_block:
     - name: IntrinsicMotivationModule
-      htm:  !include blocks/IntrinsicMotivationBlock.yml
+      network:  !include blocks/IntrinsicMotivationBlock.yml
       phase: 2
 
+  - add_block:
     - name: ActionSelectionBlock
-      htm:  !include blocks/ActionSelectionBlock.yml
+      network:  !include blocks/ActionSelectionBlock.yml
       phase: 2
 
-  connections:
-    - type:   default
-      source: SensoryInputBlock
-      target: HighLevelProcessingBlock
+  - add_link:
+    
 
-    - type:   lateral
-      source: HighLevelProcessingBlock
-      target: IntrinsicMotivationModule
-
-    - source: IntrinsicMotivationModule
-      target: ActionSelectionBlock
+    
 

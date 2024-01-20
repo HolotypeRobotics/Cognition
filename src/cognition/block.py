@@ -1,5 +1,4 @@
 from htm.bindings.engine_internal import Network,Region
-from utils.block_impl_factory import BlockImplFactory
 from connection import Connection
 import yaml
 
@@ -19,36 +18,15 @@ class Block(Network):
         self.regions = {}
         self.links = {}
 
-        # Initialize the network based on its type and parameters
-        self.initialize()
-
-    def initialize(self):
-        """
-        Initializes the network based on its type and parameters.
-        """
-        # Parse the parameters
-        self.params.parse()
-
-        # Get the specification for the network type
-        factory = BlockImplFactory.getInstance()
-        self.spec = factory.getSpec(self.type)
-
-        # Create the inputs and outputs for the network
-        self.createInputs()
-        self.createOutputs()
-
-        # Create the implementation of the network
-        self.impl = factory.createBlockImpl(self.type, self.params, self)
-
-    # def configure(self, params):
-    #     block_params = params.get('block', None)
-    #     if block_params is None:
-    #         raise Exception("Block configuration missing")
-    #     self.name = block_params.get('name', None)
-    #     if self.name is None:
-    #         raise Exception("Block name missing")
-    #     network_params = params.get('network', None)
-    #     if network_params is None:
-    #         raise Exception("Network configuration missing")
-    #     return super().configure(network_params)
+    def configure(self, params):
+        block_params = params.get('block', None)
+        if block_params is None:
+            raise Exception("Block configuration missing")
+        self.name = block_params.get('name', None)
+        if self.name is None:
+            raise Exception("Block name missing")
+        network_params = params.get('network', None)
+        if network_params is None:
+            raise Exception("Network configuration missing")
+        return super().configure(network_params)
     

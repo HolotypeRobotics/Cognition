@@ -3,24 +3,24 @@ hierarchy:
   - add_block:
     - name: SensoryInputBlock
       network:  !include blocks/SensoryInputBlock.yml
-      phase: 1
+      phase: [1]
       substitutions:
         - region: spatialpooler
           with: HighLevelProcessingBlock.spatialpooler.bottomUpIn
   - add_block:
     - name: HighLevelProcessingBlock
       network:  !include blocks/HighLevelProcessingBlock.yml
-      phase: 1
+      phase: [1]
 
   - add_block:
     - name: IntrinsicMotivationModule
       network:  !include blocks/IntrinsicMotivationBlock.yml
-      phase: 2
+      phase: [2]
 
   - add_block:
     - name: ActionSelectionBlock
       network:  !include blocks/ActionSelectionBlock.yml
-      phase: 2
+      phase: [2]
 
   - add_link:
     

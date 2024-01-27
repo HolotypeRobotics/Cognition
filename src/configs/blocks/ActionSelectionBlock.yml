@@ -1,63 +1,62 @@
 
-network:
-- AddRegion:
-    name: "encoder1"
-    type: "ScalarEncoderRegion"
-    params:
-      size: 12
-      w: 2
-      minValue: 0
-      maxValue: 10
-      periodic: true
-      phase: 1
-- AddRegion:
-    name: "sp"
-    type: "SPRegion"
-    params:
-      columnCount: 10
-      potentialRadius: 1
-      potentialPct: 1
-      globalInhibition: true
-      localAreaDensity: 0
-      numActiveColumnsPerInhArea: 3
-      stimulusThreshold: 1
-      synPermInactiveDec: 0.008
-      synPermActiveInc: 0.1
-      synPermConnected: 0.1
-      minPctOverlapDutyCycles: 0.001
-      dutyCyclePeriod: 1000
-      boostStrength: 0
-      seed: 25
-      spVerbosity: 1
-      wrapAround: true
-      learningMode: 1
-      spatialImp: null
-      phase: 2
-- AddRegion:
-    name: "tm"
-    type: "TMRegion"
-    params:
-      numberOfCols: 10
-      cellsPerColumn: 5
-      activationThreshold: 1
-      initialPermanence: 0.1
-      connectedPermanence: 0.5
-      minThreshold: 1
-      maxNewSynapseCount: 4
-      permanenceIncrement: 1
-      permanenceDecrement: 1
-      predictedSegmentDecrement: 0.1
-      maxSegmentsPerCell: 10
-      maxSynapsesPerSegment: 3
-      seed: 42
-      learningMode: true
-      activeOutputCount: 3
-      anomaly: -1
-      orColumnOutputs: false
-      phase: 3
-- AddLink:
-    src: "encoder1.encoded"
-    dest: "sp.bottomUpIn"
-- AddLink:
-    src: "sp.bottomUpOut"
-    dest: "tm.bottomUpIn"
+  - AddRegion:
+      name: "encoder1"
+      type: "ScalarEncoderRegion"
+      params:
+        size: 12
+        w: 2
+        minValue: 0
+        maxValue: 10
+        periodic: true
+        phase: 1
+  - AddRegion:
+      name: "sp"
+      type: "SPRegion"
+      params:
+        columnCount: 10
+        potentialRadius: 1
+        potentialPct: 1
+        globalInhibition: true
+        localAreaDensity: 0
+        numActiveColumnsPerInhArea: 3
+        stimulusThreshold: 1
+        synPermInactiveDec: 0.008
+        synPermActiveInc: 0.1
+        synPermConnected: 0.1
+        minPctOverlapDutyCycles: 0.001
+        dutyCyclePeriod: 1000
+        boostStrength: 0
+        seed: 25
+        spVerbosity: 1
+        wrapAround: true
+        learningMode: 1
+        spatialImp: null
+        phase: 2
+  - AddRegion:
+      name: "tm"
+      type: "TMRegion"
+      params:
+        numberOfCols: 10
+        cellsPerColumn: 5
+        activationThreshold: 1
+        initialPermanence: 0.1
+        connectedPermanence: 0.5
+        minThreshold: 1
+        maxNewSynapseCount: 4
+        permanenceIncrement: 1
+        permanenceDecrement: 1
+        predictedSegmentDecrement: 0.1
+        maxSegmentsPerCell: 10
+        maxSynapsesPerSegment: 3
+        seed: 42
+        learningMode: true
+        activeOutputCount: 3
+        anomaly: -1
+        orColumnOutputs: false
+        phase: 3
+  - AddLink:
+      src: "encoder1.encoded"
+      dest: "sp.bottomUpIn"
+  - AddLink:
+      src: "sp.bottomUpOut"
+      dest: "tm.bottomUpIn"

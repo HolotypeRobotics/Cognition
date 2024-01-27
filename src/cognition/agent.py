@@ -25,13 +25,12 @@ class Agent:
             # print(f"Config data: {config_data}")
             self.hierarchy.configure(config_data)
             print(f"Successfully configured agent")
-            self.scheduler.set_hierarchy(self.hierarchy)
 
         except Exception as e:
             print(f"Failed to configure agent: {e}")
             return False
         
-        self.scheduler = Scheduler(self.hierarchy)
+        self.scheduler.set_hierarchy(self.hierarchy)
 
         self.initialized = True
         

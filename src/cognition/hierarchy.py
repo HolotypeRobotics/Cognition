@@ -32,17 +32,6 @@ class Hierarchy():
                 self.phase_info[phase].append(block_name)
                 self.max_enabled_phase = max(self.max_enabled_phase, phase)
                 self.min_enabled_phase = min(self.min_enabled_phase, phase)
-                
-
-        
-    # def set_phases(self, block_name: str, phases: list):
-    #     block = self.blocks.get(block_name, None)
-    #     if not block:
-    #         raise Exception(f"Block [{block_name}] not found in hierarchy. Blocks: [{self.blocks.keys()}]")
-    #     for phase in phases:
-    #         self.phase_info[phase].append(block)
-    #         self.max_enabled_phase = max(self.max_enabled_phase, phase)
-    #         self.min_enabled_phase = min(self.min_enabled_phase, phase)
 
     def add_block(self, name: str, block_type: str, params: dict, network: dict, phases: list):
 
@@ -64,18 +53,34 @@ class Hierarchy():
 
         return block
             
-    def link(self, src_block, dest_block, src_region, dest_region, src_output, dest_input):
-            # This is a simple example and assumes that the blocks have 'get_region' methods and the regions have 'get_output' and 'set_input' methods.
-            # You may need to adjust this code to match the actual interface of your block and Region classes.
-            src_region_obj = src_block.get_region(src_region)
-            dest_region_obj = dest_block.get_region(dest_region)
+    # def add_link(self, src_block, dest_block, src_region, dest_region, src_output, dest_input):
+    #         # This is a simple example and assumes that the blocks have 'get_region' methods and the regions have 'get_output' and 'set_input' methods.
+    #         # You may need to adjust this code to match the actual interface of your block and Region classes.
+    #         src_region_obj = src_block.network.get_region(src_region)
+    #         dest_region_obj = dest_block.network.get_region(dest_region)
 
-            output_value = src_region_obj.get_output(src_output)
-            dest_region_obj.set_input(dest_input, output_value)
+    #         output_value = src_region_obj.get_output(src_output)
+    #         dest_region_obj.set_input(dest_input, output_value)
 
-    def link(self, src_block, dest_block, src_region_name: str, dest_region_name: str, src_output:str, dest_input:str):
-        src_region = src_block.get_region(src_region_name)
-        dest_region = dest_block.get_region(dest_region_name)
+    def add_link(self, src_block, dest_block, src_region_name: str, dest_region_name: str, src_output:str, dest_input:str):
+        try:
+            src_region = src_block.network.getRegion(src_region_name)
+        except Exception as e:
+            src_block.network.addRegion("region1", "SPRegion", "{columnCount: 1024}")
+            regions = src_block.network.getRegions()
+            print(f"Regions:{regions}")
+            print(f"{len(regions)} regions found in block {src_block.name}")
+
+            raise Exception(f"Failed to get links source region {src_region_name} from block {src_block.name}") from e
+        src_region = src_block.network.getRegion(src_region_name)
+        try:
+            dest_region = dest_block.network.getRegion(dest_region_name)
+        except Exception as e:
+            regions = dest_block.network.getRegions()
+            for region in regions:
+                print(regions)
+            raise Exception(f"Failed to get links destination region {dest_region_name} from block {dest_block.name}") from e
+        
         src_region.link(src_output, dest_region, dest_input)
     
 
@@ -130,23 +135,31 @@ class Hierarchy():
                     print(f"    Block params: {params}")
                     self.add_block(name=name, block_type=block_type, params=params, network=network, phases=phases)
                     print(f"    Added block {name}")
-            else:
-                print("Skipping command due to missing 'add_block'")
 
-            # elif 'add_link' in command:
-            #     print(f"Adding link {command['add_link']['src']} -> {command['add_link']['dest']}")
-            #     src = command['add_link']['src']
-            #     dest = command['add_link']['dest']
+        for command in self.config:
+            if 'add_link' in command:
+                add_link = command.get('add_link', None)
+                if add_link is None:
+                    raise Exception("Link configuration missing")
+                src = command['add_link'].get('src', None)
+                dest = command['add_link'].get('dest', None)
+                print(f"Adding link {src} -> {dest}")
 
-            #     # Split the source and destination strings into block and region parts
-            #     src_block, src_region, src_output = src.split('.')
-            #     dest_block, dest_region, dest_input = dest.split('.')
+                # Split the source and destination strings into block and region parts
+                src = src.split('.')
+                dest = dest.split('.')
+                if len(src) != 3:
+                    raise Exception(f"Invalid source: {src}, must be in the form block.region.output")
+                if len(dest) != 3:
+                    raise Exception(f"Invalid destination: {dest}, must be in the form block.region.input")
+                
+                src_block, src_region, src_output = src
+                dest_block, dest_region, dest_input = dest
 
-            #     # Get the source and destination networks
-            #     src_net = self.networks[src_block]
-            #     dest_net = self.networks[dest_block]
-
-            #     self.link(src_net, dest_net, src_region, dest_region, src_output, dest_input)
+                # Get the source and destination networks
+                src_net = self.blocks[src_block]
+                dest_net = self.blocks[dest_block]
+                self.add_link(src_net, dest_net, src_region, dest_region, src_output, dest_input)
 
         # # ------------------------------------------------------------
                 

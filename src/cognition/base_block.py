@@ -36,6 +36,7 @@ class BaseBlock(metaclass=BlockImplFactory):
         self.name = name
         self.params = params
         self.network = Network()
+        self.network.initialize()
 
 
     # def configure(self, name: str, params: dict, network: dict):
@@ -53,9 +54,16 @@ class BaseBlock(metaclass=BlockImplFactory):
     #     return super().configure(network_params)
 
     def configure(self, name: str, params: dict, network_config: dict):
-        print(f"BaseBlock.configure({name},{params}, {network_config})")
+        print()
+        print(f"BaseBlock.configure({name},{params})")
         self.name = name
         self.params = params
-        network_config_str = yaml.dump({"network":network_config})
-        print(f"network_config_str: {network_config_str}")
+        network_config_str = yaml.dump(network_config)  # Remove the {"network": network_config}
         self.network.configure(network_config_str)
+        regions = self.network.getRegions()
+        print(f"block {self.name} created network with {len(regions)} regions:")
+        for name, region in regions:
+            region_type = region.getType()
+            print(f"    Region {name} is of type {region_type}")
+        print()
+        

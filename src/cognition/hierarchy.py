@@ -8,15 +8,16 @@ import threading
 for loader, module_name, is_pkg in pkgutil.walk_packages(cognition.blocks.__path__):
     module = loader.find_module(module_name).load_module(module_name)
 
-
 class Hierarchy():
     def __init__(self):
-        self.phase_info = {}
+        self.phases = {}
         self.max_enabled_phase = 0
         self.min_enabled_phase = float('inf')
         self.name   = ""
         self.config = None
         self.blocks = {} # dictionary of {block name : block object}
+        self.input_blocks = [] 
+        self.output_blocks = []
         self.links  = []
 
     def set_phases(self, block_name: str, phases: [int]):
@@ -25,11 +26,11 @@ class Hierarchy():
             raise Exception(f"Block {block_name} not found")
 
         for phase in phases:
-            if phase not in self.phase_info:
-                self.phase_info[phase] = []
+            if phase not in self.phases:
+                self.phases[phase] = []
 
-            if block_name not in self.phase_info[phase]:
-                self.phase_info[phase].append(block_name)
+            if block_name not in self.phases[phase]:
+                self.phases[phase].append(block_name)
                 self.max_enabled_phase = max(self.max_enabled_phase, phase)
                 self.min_enabled_phase = min(self.min_enabled_phase, phase)
 
@@ -66,50 +67,88 @@ class Hierarchy():
         try:
             src_region = src_block.network.getRegion(src_region_name)
         except Exception as e:
-            src_block.network.addRegion("region1", "SPRegion", "{columnCount: 1024}")
-            regions = src_block.network.getRegions()
-            print(f"Regions:{regions}")
-            print(f"{len(regions)} regions found in block {src_block.name}")
-
             raise Exception(f"Failed to get links source region {src_region_name} from block {src_block.name}") from e
         src_region = src_block.network.getRegion(src_region_name)
         try:
             dest_region = dest_block.network.getRegion(dest_region_name)
         except Exception as e:
-            regions = dest_block.network.getRegions()
-            for region in regions:
-                print(regions)
             raise Exception(f"Failed to get links destination region {dest_region_name} from block {dest_block.name}") from e
         
-        src_region.link(src_output, dest_region, dest_input)
+        src_block.add_output_link(dest_block, src_region, dest_region, src_output, dest_input)
+
+    def set_input_block(self, block_name: str, input_block: str):
+        if block_name not in self.blocks:
+            raise Exception(f"Block {block_name} not found")
+        if input_block not in self.blocks:
+            raise Exception(f"Input block {input_block} not found")
+        self.input_blocks[block_name] = input_block
     
+    def set_output_block(self, block_name: str, output_block: str):
+        if block_name not in self.blocks:
+            raise Exception(f"Block {block_name} not found")
+        if output_block not in self.blocks:
+            raise Exception(f"Output block {output_block} not found")
+        self.output_blocks[block_name] = output_block
 
-    def run(self, n: int, phases: [int] = None):
+    def set_input_block_data(self, block_name: str, input_data):
+        if block_name not in self.blocks:
+            raise Exception(f"Block {block_name} not found")
+        self.blocks[block_name].set_input_data(input_data)
 
-        if not self.phase_info:
+    def get_output_block_data(self, block_name: str):
+        if block_name not in self.blocks:
+            raise Exception(f"Block {block_name} not found")
+        return self.blocks[block_name].get_output_data()
+    
+    def set_input_data(self, input_data_map: dict):
+        for block_name, input_data in input_data_map.items():
+            self.set_input_block_data(block_name, input_data)
+
+    def get_output_data(self):
+        output_data_map = {}
+        for block_name in self.output_blocks:
+            output_data_map[block_name] = self.get_output_block_data(block_name)
+        return output_data_map
+    
+    def run(self, n: int = 1, phases: [int] = None):
+
+        if not self.phases:
             raise Exception("No phases defined in hierarchy")
 
-        assert self.max_enabled_phase < len(self.phase_info), f"maxphase: {self.max_enabled_phase} size: {len(self.phase_info)}"
+        assert self.max_enabled_phase < len(self.phases), f"maxphase: {self.max_enabled_phase} size: {len(self.phases)}"
 
         for _ in range(n):
-            threads = []
             if phases:
                 for phase in phases:
-                    assert phase < len(self.phase_info), f"Phase ID {phase} specified in run() is out of range."
-                    for block in self.phase_info[phase]:
-                        t = threading.Thread(target=block.run, args=(1,))
+                    assert phase < len(self.phases), f"Phase ID {phase} specified in run() is out of range."
+                    threads = []
+                    for block_name in self.phases[phase]:
+                        block = self.blocks[block_name]
+                        print(f"Hierarchy.run() adding {block.name}.run() thread")
+                        t = threading.Thread(target=block.run, args=())
                         t.start()
                         threads.append(t)
+                    # Wait for all threads to complete
+                    print(f"Scheduler.run() waiting for {len(threads)} threads to complete")
+                    for t in threads:
+                        t.join()
+                    print(f"Scheduler.run() {len(threads)} threads completed")  
+
             else:
                 for current_phase in range(self.min_enabled_phase, self.max_enabled_phase + 1):
-                    for block in self.phase_info[current_phase]:
-                        t = threading.Thread(target=block.run, args=(1,))
+                    threads = []
+                    for block_name in self.phases[current_phase]:
+                        block = self.blocks[block_name]
+                        print(f"Hierarchy.run() adding {block.name}.run() thread")
+                        t = threading.Thread(target=block.run, args=())
                         t.start()
                         threads.append(t)
+                    # Wait for all threads to complete
+                    print(f"Scheduler.run() waiting for {len(threads)} threads to complete")
+                    for t in threads:
+                        t.join()
+                    print(f"Scheduler.run() {len(threads)} threads completed")  
 
-            # Wait for all threads to complete
-            for t in threads:
-                t.join()
     
     def configure(self, yaml_config):
         print(f"    Configuring hierarchy")    

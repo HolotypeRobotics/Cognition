@@ -3,24 +3,33 @@ hierarchy:
   - add_block:
     - name: SensoryInputBlock
       network:  !include blocks/SensoryInputBlock.yml
-      phase: [1]
+      phase: [0]
       substitutions:
         - region: sp
           with: HighLevelProcessingBlock.sp.bottomUpIn
+      role: input
+      type: 
+
   - add_block:
     - name: HighLevelProcessingBlock
       network:  !include blocks/HighLevelProcessingBlock.yml
       phase: [1]
+      role: hidden
+      type: base_block
 
   - add_block:
     - name: IntrinsicMotivationModule
       network:  !include blocks/IntrinsicMotivationBlock.yml
       phase: [2]
+      role: hidden
+      type: base_block
 
-  # - add_block:
-  #   - name: ActionSelectionBlock
-  #     network:  !include blocks/ActionSelectionBlock.yml
-  #     phase: [2]
+  - add_block:
+    - name: ActionSelectionBlock
+      network:  !include blocks/ActionSelectionBlock.yml
+      phase: [2]
+      role: output
+      type: base_block
 
   - add_link:
       src: SensoryInputBlock.sp.bottomUpOut

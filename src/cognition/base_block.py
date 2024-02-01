@@ -106,30 +106,30 @@ class BaseBlock(metaclass=BlockImplFactory):
             raise Exception(f"Region {region_name} does not exist")
         print(f"{self.name}.set_output_region({region_name})")
 
-def set_input_data(self, input_data):
-    if self.configured is False:
-        raise Exception(f"Block {self.name} not configured before calling set_input_data")
-    assert self.input_region is not None, "Input region not set"
-    print(f"{self.name}.set_input_data({input_data})")
+    def set_input_data(self, input_data):
+        if self.configured is False:
+            raise Exception(f"Block {self.name} not configured before calling set_input_data")
+        assert self.input_region is not None, "Input region not set"
+        print(f"{self.name}.set_input_data({input_data})")
 
-    if self.input_region.getType() == 'ScalarEncoderRegion':
-        self.input_region.setParameterReal64("sensedValue", input_data)
-    else:
-        # Convert the input data to an HTM.core SDR object
-        input_data = SDR(input_data)
+        if self.input_region.getType() == 'ScalarEncoderRegion':
+            self.input_region.setParameterReal64("sensedValue", input_data)
+        else:
+            # Convert the input data to an HTM.core SDR object
+            input_data = SDR(input_data)
 
-        # Set the input data for the specified region
-        self.input_region.setInputData("bottomUpIn", input_data)
+            # Set the input data for the specified region
+            self.input_region.setInputData("bottomUpIn", input_data)
 
 
-def get_output_data(self):
-    if self.configured is False:
-        raise Exception(f"Block {self.name} not configured before calling get_output_data")
-    assert self.output_region is not None, "Output region not set"
-    print(f"{self.name}.get_output_data()")
+    def get_output_data(self):
+        if self.configured is False:
+            raise Exception(f"Block {self.name} not configured before calling get_output_data")
+        assert self.output_region is not None, "Output region not set"
+        print(f"{self.name}.get_output_data()")
 
-    # Get the output data from the output region
-    output_data = self.output_region.getOutputData("bottomUpOut")
-    return output_data
+        # Get the output data from the output region
+        output_data = self.output_region.getOutputData("bottomUpOut")
+        return output_data
 
-    
+        

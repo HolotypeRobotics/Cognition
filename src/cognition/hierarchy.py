@@ -100,9 +100,9 @@ class Hierarchy():
             raise Exception(f"Block {block_name} not found")
         return self.blocks[block_name].get_output_data()
     
-    def set_input_data(self, input_data_map: dict):
-        for block_name, input_data in input_data_map.items():
-            self.set_input_block_data(block_name, input_data)
+    # def set_input_data(self, input_data_map: dict):
+    #     for block_name, input_data in input_data_map.items():
+    #         self.set_input_block_data(block_name, input_data)
 
     def get_output_data(self):
         output_data_map = {}
@@ -110,7 +110,7 @@ class Hierarchy():
             output_data_map[block_name] = self.get_output_block_data(block_name)
         return output_data_map
     
-    def run(self, n: int = 1, phases: [int] = None):
+    def process_data(self, n: int = 1, phases: [int] = None):
 
         if not self.phases:
             raise Exception("No phases defined in hierarchy")
@@ -150,15 +150,15 @@ class Hierarchy():
                     print(f"Scheduler.run() {len(threads)} threads completed")  
 
     
-    def configure(self, yaml_config):
+    def configure(self, config):
         print(f"    Configuring hierarchy")    
-        if yaml_config is None:
+        if config is None:
             raise Exception("YAML configuration string is empty.")
         
-        if not isinstance(yaml_config, dict):
+        if not isinstance(config, dict):
             raise ValueError("config_data must be a dictionary")
         
-        self.config = yaml_config.get('hierarchy', None)
+        self.config = config.get('hierarchy', None)
 
         if self.config is None:
             raise Exception("Hierarchy configuration missing")

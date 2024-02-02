@@ -34,3 +34,9 @@ hierarchy:
   - add_link:
       src: SensoryInputBlock.sp.bottomUpOut
       dest: HighLevelProcessingBlock.sp.bottomUpIn
+  - add_link:
+      src: HighLevelProcessingBlock.sp.bottomUpOut
+      dest: IntrinsicMotivationModule.sp.bottomUpIn
+  - add_link:
+      src: HighLevelProcessingBlock.sp.bottomUpOut
+      dest: ActionSelectionBlock.sp.bottomUpIn

@@ -1,4 +1,5 @@
 
+network:
   - AddRegion:
       name: "encoder1"
       type: "ScalarEncoderRegion"

@@ -68,7 +68,7 @@ class BaseBlock(metaclass=BlockImplFactory):
             output = self.network.getRegion(link['src_region']).getOutputData(link['src_output'])
             link['block'].network.getRegion(link['dest_region']).setInputData(link['dest_input'], output)
 
-    def configure(self, name: str, params: dict, role, network_config: dict):
+    def configure(self, name: str, params: dict, network_config: dict):
         print(f"{self.name}.configure({name},{params})")
         self.name = name
         self.params = params

@@ -34,7 +34,7 @@ class Hierarchy():
                 self.max_enabled_phase = max(self.max_enabled_phase, phase)
                 self.min_enabled_phase = min(self.min_enabled_phase, phase)
 
-    def add_block(self, name: str, block_type: str, params: dict, network: dict, phases: list):
+    def add_block(self, name: str, block_type: str, params: dict, network: dict, phases: list, role: str = None):
 
         if name in self.blocks:
             raise Exception(f"Block {name} already exists in hierarchy {self.name}")
@@ -47,11 +47,16 @@ class Hierarchy():
         print(f"    Block {name} configured")
         print(f"adding block {name} to hierarchy {self.name}")
         self.blocks[name] = block
+        if role == "input":
+            print(f"adding block {name} to input blocks")
+            self.input_blocks.append(block)
+        if role == "output":
+            print(f"adding block {name} to output blocks")
+            self.output_blocks.append(block)
         print(f"setting phases {phases} to block {block}, with name {name}")
         phases = phases or [0]  # If no phases are specified, add the block to phase 0
         self.set_phases(name, phases)
         print(f"succesfully set phases {phases} for block {name}")
-
         return block
             
     # def add_link(self, src_block, dest_block, src_region, dest_region, src_output, dest_input):
@@ -67,11 +72,13 @@ class Hierarchy():
         try:
             src_region = src_block.network.getRegion(src_region_name)
         except Exception as e:
+            print(f"Regions: {src_block.network}")
             raise Exception(f"Failed to get links source region {src_region_name} from block {src_block.name}") from e
         src_region = src_block.network.getRegion(src_region_name)
         try:
             dest_region = dest_block.network.getRegion(dest_region_name)
         except Exception as e:
+            print(f"Regions: {dest_block.network}")
             raise Exception(f"Failed to get links destination region {dest_region_name} from block {dest_block.name}") from e
         
         src_block.add_output_link(dest_block, src_region, dest_region, src_output, dest_input)
@@ -170,9 +177,10 @@ class Hierarchy():
                     block_type = block.get('block_type', 'Block')
                     params = block.get('params', {})
                     phases = block.get('phase', [])
+                    role = block.get('role', None)
                     network = block.get('network', {})
                     print(f"    Block params: {params}")
-                    self.add_block(name=name, block_type=block_type, params=params, network=network, phases=phases)
+                    self.add_block(name=name, block_type=block_type, params=params, network=network, phases=phases, role=role)
                     print(f"    Added block {name}")
 
         for command in self.config:

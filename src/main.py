@@ -2,6 +2,8 @@ import numpy as np
 from cognition.hierarchy import Hierarchy
 import logging
 import yaml
+import os
+from yamlinclude import YamlIncludeConstructor
 
 logging.basicConfig(level=logging.INFO)
 
@@ -94,8 +96,11 @@ def spin():
 
 if __name__ == "__main__":
     # Initialize the hierarchy
+    config_path = 'configs/agent.yml'
     hierarchy = Hierarchy()
-    with open('configs/agent.yml') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-        hierarchy.configure(config)
+    YamlIncludeConstructor.add_to_loader_class(loader_class=yaml.FullLoader, base_dir=os.path.dirname(config_path))
+    config_data = None
+    with open(config_path, 'r') as f:
+        config_data = yaml.load(f, yaml.FullLoader)
+    hierarchy.configure(config_data)
     spin()

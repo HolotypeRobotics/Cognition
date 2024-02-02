@@ -34,6 +34,17 @@ class Hierarchy():
                 self.max_enabled_phase = max(self.max_enabled_phase, phase)
                 self.min_enabled_phase = min(self.min_enabled_phase, phase)
 
+    def generate_input_callback_handle(self, data_type, block_name):
+        def input_callback(data):
+            self.set_input_block_data(block_name, data)
+        return input_callback
+
+    def add_output_callback_handle(self, block_name, callback):
+        block = self.blocks.get(block_name)
+        if not block:
+            raise Exception(f"Block {block_name} not found")
+        block.add_output_callback(callback)
+
     def add_block(self, name: str, block_type: str, params: dict, network: dict, phases: list, role: str = None):
 
         if name in self.blocks:
@@ -68,20 +79,33 @@ class Hierarchy():
     #         output_value = src_region_obj.get_output(src_output)
     #         dest_region_obj.set_input(dest_input, output_value)
 
-    def add_link(self, src_block, dest_block, src_region_name: str, dest_region_name: str, src_output:str, dest_input:str):
+    def add_link(self, src_block, dest_block, src_region_name: str, dest_region_name: str, src_output_name:str, dest_input_name:str):
         try:
             src_region = src_block.network.getRegion(src_region_name)
         except Exception as e:
-            print(f"Regions: {src_block.network}")
+            # Print the regions to help with debugging
+            print()
+            regions = src_block.network.getRegions()
+            regions_str = ', '.join([str(region) for region in regions])
+            print(f"Regions in [{src_block.name}]: [{regions_str}]")
+            print()
             raise Exception(f"Failed to get links source region {src_region_name} from block {src_block.name}") from e
-        src_region = src_block.network.getRegion(src_region_name)
+        
         try:
             dest_region = dest_block.network.getRegion(dest_region_name)
         except Exception as e:
-            print(f"Regions: {dest_block.network}")
+            # Print the regions to help with debugging
+            print()
+            regions = dest_block.network.getRegions()
+            regions_str = ', '.join([str(region) for region in regions])
+            print(f"Regions in [{dest_block.name}]: [{regions_str}]")
+
+            print()
             raise Exception(f"Failed to get links destination region {dest_region_name} from block {dest_block.name}") from e
         
-        src_block.add_output_link(dest_block, src_region, dest_region, src_output, dest_input)
+        # src_block.add_output_link(dest_block, src_region, dest_region, src_output, dest_input)
+        # add_output_link( next_block, src_region, src_output, dest_region, dest_input):
+        src_block.add_output_link(next_block=dest_block, src_region=src_region, src_output=src_output_name, dest_region=dest_region, dest_input=dest_input_name)
 
     def set_input_block(self, block_name: str, input_block: str):
         if block_name not in self.blocks:

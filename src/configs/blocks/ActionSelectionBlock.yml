@@ -1,6 +1,5 @@
-
 network:
-  - AddRegion:
+  - addRegion:
       name: "encoder1"
       type: "ScalarEncoderRegion"
       params:
@@ -10,7 +9,7 @@ network:
         maxValue: 10
         periodic: true
         phase: 1
-  - AddRegion:
+  - addRegion:
       name: "sp"
       type: "SPRegion"
       params:
@@ -33,7 +32,7 @@ network:
         learningMode: 1
         spatialImp: null
         phase: 2
-  - AddRegion:
+  - addRegion:
       name: "tm"
       type: "TMRegion"
       params:
@@ -55,9 +54,9 @@ network:
         anomaly: -1
         orColumnOutputs: false
         phase: 3
-  - AddLink:
+  - addLink:
       src: "encoder1.encoded"
       dest: "sp.bottomUpIn"
-  - AddLink:
+  - addLink:
       src: "sp.bottomUpOut"
       dest: "tm.bottomUpIn"

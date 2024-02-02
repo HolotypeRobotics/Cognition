@@ -4,11 +4,73 @@ import logging
 import yaml
 import os
 from yamlinclude import YamlIncludeConstructor
+from htm.bindings.sdr import SDR
+#  Attempting to get a feel of what I need to do to set up the hierarchy to work with the robot, so that I know what to automate with the agent class
+#  E.g. I need the agent to be able to calculate the size of the inputs and outputs, based on the type of data it is receiving from sensors
+#  I need write this code for the node here, and then try to create functions to get rid of hard coded values.
+#  The values that I cannot get rid of are the ones that will need to be placed in the agents config, and then loaded by the agent class.
 
 logging.basicConfig(level=logging.INFO)
 
+
+callbacks = None
+
+
 # Initialize the hierarchy
 hierarchy = Hierarchy()
+interface_config_file = 'configs/interface_config.yml'
+agent_config_file = 'configs/agent_config.yml'
+# depends on the type of data the robot is receiving from the sensors
+# SDR sensory_input = SDR(2048)
+def get_input_sizes(sensors_to_blocks: dict):
+    # sensors_to_blocks is a dictionary that maps the sensor data to the blocks in the hierarchy
+    # I need to get the size of the input data for each block
+    # returns a map of input sizes for each block
+    input_sizes = {}
+    for block, sensor in sensors_to_blocks.items():
+
+def generate_callbacks(sensors_to_blocks: dict):
+    # sensors_to_blocks is a dictionary that maps the sensor data to the blocks in the hierarchy
+    # I need to generate a callback function for each sensor
+    # returns a map of callback functions for each sensor
+    # The callback function will be called when the sensor data is updated
+    # and will update the input to the block
+    # Specified in the interface config:
+    # - The sensor data type
+    # - The block name
+
+def configure_interface(config):
+    # convert the yaml file to a dictionary
+    config_data = None
+    with open(config, 'r') as f:
+        config_data = yaml.load(f, yaml.FullLoader)
+    get_input_sizes(config_data['sensors_to_blocks'])
+
+def configure_agent(config: dict):
+    get_input_sizes(config['sensors_to_blocks'])
+
+def configure():
+    # Load the config for the interface and the agent
+    interface_config = None
+    agent_config = None
+    with open(interface_config_file, 'r') as f:
+        interface_config = yaml.load(f, yaml.FullLoader)
+    with open(agent_config_file, 'r') as f:
+        agent_config = yaml.load(f, yaml.FullLoader)
+    configure_interface(interface_config)
+    configure_agent(agent_config)
+
+
+def connect_sensor(topic, data_type, block_name: str):
+    # Creates a callback, and subscribes to the sensor data
+    # The callback will update the input to the block
+    # The callback will be generated based on the data type and the block name
+    pass
+
+def connect_output(topic, data_type, block_name: str):
+    # Publishes the output of the agent
+    # The output is the concatenated matrix
+    pass
 
 def publish_concatenated_matrix(concatenated_matrix: np.ndarray):
     """
@@ -16,69 +78,6 @@ def publish_concatenated_matrix(concatenated_matrix: np.ndarray):
     """
     # Your code here to publish the concatenated matrix
     pass
-
-def gyro_callback(gyro_data: float):
-    """
-    Callback function for gyro data.
-    """
-    try:
-        hierarchy.set_input(block_name='gyro', data=gyro_data)
-    except Exception as e:
-        logging.error(f"Error in gyro_callback: {e}")
-
-def accelerometer_callback(accelerometer_data: float):
-    """
-    Callback function for accelerometer data.
-    """
-    try:
-        hierarchy.set_input(block_name='accelerometer', data=accelerometer_data)
-    except Exception as e:
-        logging.error(f"Error in accelerometer_callback: {e}")
-
-def magnetometer_callback(magnetometer_data: float):
-    """
-    Callback function for magnetometer data.
-    """
-    try:
-        hierarchy.set_input(block_name='magnetometer', data=magnetometer_data)
-    except Exception as e:
-        logging.error(f"Error in magnetometer_callback: {e}")
-
-def tof1_callback(tof1_data: float):
-    """
-    Callback function for tof1 data.
-    """
-    try:
-        hierarchy.set_input(block_name='tof1', data=tof1_data)
-    except Exception as e:
-        logging.error(f"Error in tof1_callback: {e}")
-
-def tof2_callback(tof2_data: float):
-    """
-    Callback function for tof2 data.
-    """
-    try:
-        hierarchy.set_input(block_name='tof2', data=tof2_data)
-    except Exception as e:
-        logging.error(f"Error in tof2_callback: {e}")
-
-def encoder1_callback(encoder1_data: float):
-    """
-    Callback function for encoder1 data.
-    """
-    try:
-        hierarchy.set_input(block_name='encoder1', data=encoder1_data)
-    except Exception as e:
-        logging.error(f"Error in encoder1_callback: {e}")
-
-def encoder2_callback(encoder2_data):
-    """
-    Callback function for encoder2 data.
-    """
-    try:
-        hierarchy.set_input(block_name='encoder2', data=encoder2_data)
-    except Exception as e:
-        logging.error(f"Error in encoder2_callback: {e}")
 
 
 def spin():

@@ -1,0 +1,9 @@
+- interfaces:
+  - add_input:
+    name: gyro
+    data_type: float
+    block: encoder1.enc
+ - add_output:
+    name: Motor1
+    data_type: float
+    block: ActionSelectionBlock.tm
